@@ -15,7 +15,7 @@ call :push_in core.autocrlf
 call :push_in user.name
 call :push_in user.email
 
-:goto done
+goto done
 
 :msg
     echo %script_name%: %* >&2
