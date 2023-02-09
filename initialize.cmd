@@ -52,13 +52,13 @@ goto begin
     :: along.
     call :push_in core.autocrlf
 
-    :: Usually these are automatically set in the container, but not always.
-    call :push_in user.name
-    call :push_in user.email
-
     :: Test with a nonexistent git configuration variable.
     :: (FIXME: Remove this.)
     call :push_in user.avatar
+
+    :: Usually these are automatically set in the container, but not always.
+    call :push_in user.name
+    call :push_in user.email
 
     exit /b
 
