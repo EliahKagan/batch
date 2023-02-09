@@ -1,12 +1,12 @@
 @echo off
 
-setlocal
+setlocal enableextensions
 
 set "conf_path=.inherited-configuration"
 set "script_uuid=7d63c880-c89c-4bc4-b440-57e134bf08d9"
 
 set "script_name=%~nx0"
-set "temp_path=%TEMP%\%script_uuid%"
+set "temp_path_prefix=%TEMP%\%script_uuid%-%RANDOM%"
 
 goto begin
 
@@ -14,7 +14,7 @@ goto begin
     echo/%script_name%: %* >&2
     exit /b
 
-:delete
+:delete_if_exist
     if exist "%*" (
         del "%*"
     )
@@ -23,18 +23,28 @@ goto begin
 :push_in
     setlocal
     set "name=%1"
+    set "temp_path=%temp_path_prefix%-%name%"
 
-    for /f "usebackq delims=" %%G in (`git config "%name%"`) do (
+    call :delete_if_exist %temp_path%
+
+    git config -- "%name%" >"%temp_path%"
+    if %ERRORLEVEL% NEQ 0 (
+        call :msg skipping: %name%
+        del "%temp_path%"
+        exit /b 0
+    )
+
+    for /f "usebackq delims=" %%G in ("%temp_path%") do (
         set "value=%%G"
     )
-
-    if %ERRORLEVEL% EQU 0 (
-        call :msg carrying in: %name%=%value%
-        echo/%name% %value% >>"%conf_path%"
-    ) else (
-        call :msg skipping: %name%
+    if %ERRORLEVEL% NEQ 0 (
+        msg can't read temporary file: %temp_path%
+        exit 1
     )
 
+    del "%temp_path%"
+    call :msg carrying in: %name%=%value%
+    echo/%name% %value% >>"%conf_path%"
     exit /b
 
 :push_all_in
@@ -53,6 +63,6 @@ goto begin
     exit /b
 
 :begin
-    call :delete %conf_path%
+    call :delete_if_exist %conf_path%
     call :push_all_in
-    call :delete %temp_path%
+    call :delete_if_exist %temp_path_prefix%
