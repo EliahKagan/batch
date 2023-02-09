@@ -15,6 +15,9 @@ call :push_in core.autocrlf
 call :push_in user.name
 call :push_in user.email
 
+:: Test with a nonexistent git configuration variable. (FIXME: Remove this.)
+call :push_in user.avatar
+
 goto done
 
 :msg
@@ -22,6 +25,7 @@ goto done
     exit /b
 
 :push_in
+    setlocal
     set name=%1
 
     for /f "delims=" %%a in ('git config %name%') do (
