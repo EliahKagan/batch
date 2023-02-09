@@ -38,7 +38,7 @@ goto begin
         set "value=%%G"
     )
     if %ERRORLEVEL% NEQ 0 (
-        msg can't read temporary file: %temp_path%
+        call :msg can't read temporary file: %temp_path%
         exit 1
     )
 
