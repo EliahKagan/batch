@@ -23,7 +23,7 @@ goto begin
 :push_in
     setlocal
     set "name=%1"
-    set "temp_path=%temp_path_prefix%-%name%"
+    set "temp_path=%temp_path_prefix%-%name%.tmp"
 
     call :delete_if_exist %temp_path%
 
