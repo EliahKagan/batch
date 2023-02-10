@@ -13,8 +13,10 @@
 
 @echo off
 setlocal enableextensions
+
 set "conf_path=.inherited-configuration"
 set "script_name=%~nx0"
+
 goto begin
 
 :msg
