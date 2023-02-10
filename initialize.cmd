@@ -21,12 +21,6 @@ goto begin
     echo/%script_name%: %* >&2
     exit /b
 
-:delete_if_exist
-    if exist "%*" (
-        del "%*"
-    )
-    exit /b
-
 :push_in
     setlocal
     set "name=%1"
@@ -47,7 +41,7 @@ goto begin
     exit /b
 
 :begin
-    call :delete_if_exist %conf_path%
+    del "%conf_path%" 2>NUL
 
     :: If the host clones the repo Windows-style, have the container play
     :: along.
